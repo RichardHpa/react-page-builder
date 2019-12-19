@@ -1,0 +1,90 @@
+.rhBuilder{
+    .addNew{
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 0px 40px;
+        background-color: #ecf0f1;
+        min-height: 50px;
+        box-sizing: border-box;
+
+    }
+
+    .rhIcon{
+        color: #7f8c8d;
+        &.more{
+            margin-left: 10px;
+        }
+        &:hover{
+            color: black;
+            cursor: pointer;
+        }
+    }
+}
+
+.singleBlock{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0px 40px;
+    background-color: #ecf0f1;
+    min-height: 50px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+
+.content{
+    background-color: red;
+    min-height: 20px;
+    width: 100%;
+}
+
+.moreControl{
+    position: relative;
+}
+
+.moreControl .tooltiptext {
+    display: flex;
+    flex-wrap: wrap;
+    width: 200px;
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+  visibility: hidden;
+  max-width: 200px;
+  background-color: white;
+  color: #7f8c8d;
+  text-align: center;
+  position: absolute;
+  z-index: 1;
+  top: 150%;
+right: -10px;
+
+  opacity: 0;
+  transition: opacity 0.3s;
+  svg{
+      flex: 1;
+      padding: 10px;
+      &:hover{
+          background-color: #7f8c8d;
+          color: white;
+          cursor: pointer;
+      }
+  }
+}
+
+
+
+.moreControl .tooltiptext::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  right: 10px;
+  border-width: 10px;
+  border-style: solid;
+  border-color: transparent transparent white transparent;
+}
+
+.moreControl .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
