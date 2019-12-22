@@ -9,37 +9,90 @@ class RhBuilder extends Component {
         super(props)
         this.state = {
             currentBlocks: [],
-            iterationNum: 0
+            iterationNum: 0,
+            adding: false
         }
     }
 
-    addBlock = () => {
+    toggleAddBlock = () => {
+        this.setState({
+            adding: !this.state.adding
+        })
+    }
+
+    addBlock = (type) => {
         const { currentBlocks, iterationNum } = this.state;
         const newBlock = {
             id: iterationNum,
-            block_type: 'type',
+            block_type: type,
             block_content: null,
             originalID: null
         }
         currentBlocks.push(newBlock);
         this.setState({
             currentBlocks: currentBlocks,
-            iterationNum: iterationNum + 1
+            iterationNum: iterationNum + 1,
+            adding: false
+        })
+    }
+
+    handleDeleteBlock = (id) => {
+        const { currentBlocks } = this.state;
+        for (var i = 0; i < currentBlocks.length; i++) {
+            if(currentBlocks[i].id === id){
+                currentBlocks.splice(i, 1);
+                break;
+            }
+        }
+        this.setState({
+            currentBlocks
+        })
+    }
+
+    handleMoveBlock = (id, type) => {
+        const { currentBlocks } = this.state;
+        for (var i = 0; i < currentBlocks.length; i++) {
+            if(currentBlocks[i].id === id){
+                let newIndex;
+                if(type === 'up'){
+                    newIndex = i + -1;
+                } else{
+                    newIndex = i + 1;
+                }
+                if (newIndex < 0  || newIndex === currentBlocks.length) return;
+                let block = currentBlocks.splice(i, 1);
+                currentBlocks.splice(newIndex, 0, block[0]);
+                break;
+            }
+        }
+        this.setState({
+            currentBlocks
         })
     }
 
     render(){
-        const { currentBlocks } = this.state;
+        const { currentBlocks, adding } = this.state;
         return (
-            <div className="rhBuilder">
+            <div className={`rhBuilder`}>
             {
                 currentBlocks.map((singleBlock, i) => (
-                    <SingleBlock key={singleBlock} blockNum={i}/>
+                    <SingleBlock
+                        key={singleBlock.id}
+                        blockInfo={singleBlock}
+                        deleteBlock={this.handleDeleteBlock}
+                        moveBlock={this.handleMoveBlock}
+                    />
                 ))
             }
-
-                <div className="addNew">
-                    <span className="rhIcon" onClick={this.addBlock}><FontAwesomeIcon icon={faPlus} size="lg"/></span>
+                <div className="rhAddNew">
+                    <span className={`rhIcon ${adding && 'rhAdding'}`} onClick={this.toggleAddBlock}><FontAwesomeIcon icon={faPlus} size="lg"/></span>
+                    {
+                        adding &&
+                        <div className="rhBlocks">
+                            <span className="rhBlockIcon" onClick={this.addBlock.bind(this, 'text')}>Text Block</span>
+                            <span className="rhBlockIcon" onClick={this.addBlock.bind(this, 'image')}>Image Block</span>
+                        </div>
+                    }
                 </div>
             </div>
         )
@@ -57,26 +110,60 @@ class SingleBlock extends Component {
         }
     }
 
+    componentDidMount() {
+        document.addEventListener('mousedown', this.handleClickOutside);
+    }
+
+    handleClickOutside = (event) => {
+        const { toolTip } = this.state;
+        if (this.wrapperRef && !this.wrapperRef.contains(event.target)){
+            if(toolTip === true){
+                this.setState({
+                    toolTip: false
+                })
+            }
+        }
+    }
+
     toggleShowMore = () => {
         this.setState({
             toolTip: !this.state.toolTip
         })
     }
+    setWrapperRef = (node) => {
+      this.wrapperRef = node;
+    }
+
+    deleteBlock = () => {
+        this.setState({
+            toolTip: false
+        })
+        this.props.deleteBlock(this.props.blockInfo.id);
+    }
+
+    moveBlock = (moveType) => {
+        console.log(moveType);
+        this.setState({
+            toolTip: false
+        })
+        this.props.moveBlock(this.props.blockInfo.id, moveType);
+    }
+
     render(){
         const {toolTip} = this.state;
         return(
-            <div className="singleBlock">
-                <div className="content">
-                    Block {this.props.blockNum}
+            <div className="rhSingleBlock">
+                <div className="rhContent">
+                    Block {this.props.blockInfo.block_type} #{this.props.blockInfo.id}
                 </div>
                 <div className="moreControl">
                     <span className="rhIcon more" onClick={this.toggleShowMore}><FontAwesomeIcon icon={faEllipsisH} size="lg"/></span>
                     {
                         toolTip &&
-                         <div className="tooltiptext" onMouseLeave={this.toggleShowMore}>
-                            <FontAwesomeIcon icon={faTimes} size="lg"/>
-                            <FontAwesomeIcon icon={faArrowUp} size="lg"/>
-                            <FontAwesomeIcon icon={faArrowDown} size="lg"/>
+                         <div className="tooltiptext" ref={this.setWrapperRef}>
+                            <FontAwesomeIcon icon={faTimes} size="lg" onClick={this.deleteBlock}/>
+                            <FontAwesomeIcon icon={faArrowUp} size="lg" onClick={this.moveBlock.bind(this, 'up')}/>
+                            <FontAwesomeIcon icon={faArrowDown} size="lg"onClick={this.moveBlock.bind(this, 'down')}/>
                         </div>
                     }
 
