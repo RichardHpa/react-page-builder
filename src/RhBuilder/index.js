@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEllipsisH, faPlus, faTimes, faArrowUp, faArrowDown} from '@fortawesome/free-solid-svg-icons'
 
+import EditorBlock from './Blocks/Editor';
+import ImageBlock from './Blocks/Image';
+import IFrameBlock from './Blocks/Iframe';
+
 import './builder.scss';
 
 class RhBuilder extends Component {
@@ -89,8 +93,9 @@ class RhBuilder extends Component {
                     {
                         adding &&
                         <div className="rhBlocks">
-                            <span className="rhBlockIcon" onClick={this.addBlock.bind(this, 'text')}>Text Block</span>
-                            <span className="rhBlockIcon" onClick={this.addBlock.bind(this, 'image')}>Image Block</span>
+                            <div className="rhBlockIcon" onClick={this.addBlock.bind(this, 'textBlock')}>Text Block</div>
+                            <div className="rhBlockIcon" onClick={this.addBlock.bind(this, 'imageBlock')}>Image Block</div>
+                            <div className="rhBlockIcon" onClick={this.addBlock.bind(this, 'iframeBlock')}>Iframe Block</div>
                         </div>
                     }
                 </div>
@@ -154,7 +159,14 @@ class SingleBlock extends Component {
         return(
             <div className="rhSingleBlock">
                 <div className="rhContent">
-                    Block {this.props.blockInfo.block_type} #{this.props.blockInfo.id}
+                {(() => {
+                    switch (this.props.blockInfo.block_type) {
+                        case 'imageBlock':   return <ImageBlock blockContent={this.props.blockInfo.block_content} sendContent={this.handleSendContent}/>;
+                        case 'textBlock':   return <EditorBlock blockContent={this.props.blockInfo.block_content} sendContent={this.handleSendContent}/>;
+                        case 'iframeBlock': return <IFrameBlock blockContent={this.props.blockInfo.block_content} sendContent={this.handleSendContent}/>;
+                        default: return null
+                    }
+                })()}
                 </div>
                 <div className="moreControl">
                     <span className="rhIcon more" onClick={this.toggleShowMore}><FontAwesomeIcon icon={faEllipsisH} size="lg"/></span>
@@ -166,9 +178,7 @@ class SingleBlock extends Component {
                             <FontAwesomeIcon icon={faArrowDown} size="lg"onClick={this.moveBlock.bind(this, 'down')}/>
                         </div>
                     }
-
                 </div>
-
             </div>
         )
     }

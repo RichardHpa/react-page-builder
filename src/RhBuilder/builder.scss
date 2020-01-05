@@ -2,7 +2,11 @@
 $rhGrey: #7f8c8d;
 
 .rhBuilder{
+    *{
+        box-sizing: border-box;
+    }
     font-family: "Nunito", sans-serif;
+
     .rhAddNew{
         display: flex;
         justify-content: flex-start;
@@ -30,8 +34,9 @@ $rhGrey: #7f8c8d;
         width: 100%;
         padding: 0 10px;
         .rhBlockIcon{
+            display: inline-block;
             padding: 10px;
-            margin-right: 5px;
+            margin: 5px 5px 5px 0;
             border: 1px solid $rhGrey;
             background-color: white;
             color: $rhGrey;
@@ -49,7 +54,7 @@ $rhGrey: #7f8c8d;
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    padding: 0px 40px;
+    padding: 5px 40px;
     background-color: #ecf0f1;
     min-height: 50px;
     box-sizing: border-box;
@@ -81,6 +86,7 @@ $rhGrey: #7f8c8d;
     opacity: 0;
     transition: opacity 0.3s;
     svg{
+        box-sizing: content-box;
         flex: 1;
         padding: 10px;
         &:hover{
@@ -104,4 +110,88 @@ $rhGrey: #7f8c8d;
 .moreControl .tooltiptext {
     visibility: visible;
     opacity: 1;
+}
+
+
+.rhImageBlock{
+    width: 100%;
+    border: 1px dashed $rhGrey;
+    padding: 10px;
+    text-align: center;
+}
+
+
+@mixin input{
+    display: block;
+    width: 100%;
+    height: calc(1.5em + .75rem + 2px);
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+@mixin button {
+    display: inline-block;
+    font-weight: 400;
+    color: #212529;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 0;
+}
+
+
+.rhGroup{
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -ms-flex-align: stretch;
+    align-items: stretch;
+    width: 100%;
+    .rhInput{
+    position: relative;
+    -ms-flex: 1 1 0%;
+    flex: 1 1 0%;
+    min-width: 0;
+    margin-bottom: 0;
+        @include input;
+    }
+    button{
+        border: 1px solid $rhGrey;
+        margin-left: -1px;
+        display: flex;
+        @include button;
+    }
+}
+
+.iframe-active {
+  overflow: hidden;
+  // Calculated from the aspect ration of the content (in case of 16:9 it is 9/16= 0.5625)
+  padding-top: 56.25%;
+  position: relative;
+}
+
+.iframe-active iframe {
+   border: 0;
+   height: 100%;
+   left: 0;
+   position: absolute;
+   top: 0;
+   width: 100%;
 }
